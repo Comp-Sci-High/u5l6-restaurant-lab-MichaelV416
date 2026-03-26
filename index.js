@@ -1,28 +1,42 @@
 // Task 1: Set up server [1 pt]
 // Install + import express and mongoose 
  
-
+const express = require("express");
 
 // Create app instance
-
-
+const mongoose = require("mongoose");
+const app = express();
+app.use((req,res,next)=>{
+    console.log(req.method,req.url)
+})
 // Add middleware to process JSON request body
 
-
+app.use(express.json())
 // Write an async startServer function that
 // - connects to MongoDB with your SRV string with a database called restaurant
 // - starts the server at port 3000
 // - DO NOT ADD ANY ITEMS YET
 
+async function startServer(){
+  await mongoose.connect("mongodb+srv://SE12:CSH2026@cluster0.ytvmkmf.mongodb.net/?appName=Cluster0")
 
+
+app.listen(3000, () =>{
+  console.log("Server is starting")
+})
+}
 // call startServer
 
-
+startServer()
 // Task 2: Define the schema + model for a menu item [2 pts]
 // It should have name, cost, and at least 2 more attributes of your choice
 // You need at least 1 required, 1 unique, and 1 default that makes sense
 
-
+const menuSchema = new mongoose.Schema({
+    name:({type:String,required:true, unique:true}),
+    price:({type:Number,required:true}),
+    orderNumber:({type:Number,required:true, default:0})
+})
 
 // Task 3: Define the model for the MenuItem [1 pt]
 
@@ -35,14 +49,27 @@
 
 // Task 5: Define a GET route at /menu that returns all menu items as a JSON [2 pt]
 
-
+app.get("/menu", async(req,res)=>{
+const menu = await Menu.find({})
+res.json(menu)
+})
 
 // Task 6: Define a GET route at /menu/value that returns only menu items that cost less than 5 [2 pts]
 
-
-
+app.get("/menu/price",async(req,res)=>{
+const price = {price:{$lte:5}}
+res.json(price)
+})
 // Task 7: Define a POST route at /menu/new that adds a new menu item [2 pts]
 // The values for the menu item should come from the request body
 // Test this route from Postman (make public!) and make sure the user's item is in the DB
 
-
+app.post("/menu/add", async (req,res)=>{
+ 
+  const newMenu = await new Menu ({
+    name: req.body.name,
+    price: req.body.price,
+    orderNumber: req.body.orderNumber,
+  }).save()
+  res.json(newMenu)
+})
