@@ -40,7 +40,7 @@ const menuSchema = new mongoose.Schema({
 
 // Task 3: Define the model for the MenuItem [1 pt]
 
-
+const Menu = mongoose.model("Menu", menuSchema, "Menus")
 // Task 4: Define a POST route at /menu/test that adds a test menu item to the database [2 pt]
 // The values for the menu item should be written in the code, NOT in Postman
 // Test this route from Postman (make public!) and make sure your test item is in the DB
